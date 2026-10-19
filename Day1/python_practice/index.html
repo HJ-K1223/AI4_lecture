@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Python 첫걸음 · 실습 노트</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="answers.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header><a class="brand" href="#top"><span class="logo">Py</span> 실습 노트 <span class="day">DAY 01</span></a><span class="offline">● 서버 없이 실행</span></header>
+  <main id="top">
+    <noscript><p class="note">실습 결과를 확인하려면 브라우저에서 JavaScript를 허용하세요.</p></noscript>
+    <section class="intro"><p class="eyebrow">입력하고, 실행하고, 이해하기</p><h1>Python 첫걸음</h1><p>작은 입력 하나로 달라지는 결과를 확인하세요.<br>변수부터 숫자 맞추기 게임까지, 다섯 가지 기초 실습을 준비했습니다.</p><div class="note">브라우저 예제는 JavaScript로 동작합니다. Python 정답은 각 실습 아래에서 확인하고, 직접 작성하는 연습은 <code>exercises.py</code>에서 이어가세요.</div></section>
+    <nav aria-label="실습 바로가기"><a href="#lesson1">01 변수</a><a href="#lesson2">02 조건문</a><a href="#lesson3">03 리스트</a><a href="#lesson4">04 반복문</a><a href="#lesson5">05 미니 게임</a></nav>
+    <div class="lessons">
+      <article id="lesson1"><div class="lesson-heading"><span class="number">01</span><div><p class="eyebrow">VARIABLES</p><h2>변수와 숫자 연산</h2></div><span class="tag">변수 · print</span></div><p>두 변수에 숫자를 저장하고 더해 보세요. 값을 바꾸면 합계도 달라집니다.</p>
+        <form id="sum-form"><div class="fields"><label>첫 번째 숫자<input name="first" type="number" step="1" value="100" required></label><span class="operator" aria-hidden="true">+</span><label>두 번째 숫자<input name="second" type="number" step="1" value="200" required></label></div><button type="submit">합계 확인 <span aria-hidden="true">↗</span></button></form><div class="result-label">실행 결과</div><pre id="sum-result" class="result" aria-live="polite">숫자를 입력하고 합계를 확인하세요.</pre><details><summary>Python 정답 코드 보기</summary><pre class="code" data-answer="1"></pre></details><p class="challenge">더 해보기 · 두 수의 차와 곱도 구해 보세요.</p></article>
+      <article id="lesson2"><div class="lesson-heading"><span class="number">02</span><div><p class="eyebrow">CONDITIONS</p><h2>점수로 합격 판정하기</h2></div><span class="tag">if · else</span></div><p>60점 이상이면 합격입니다. 59점과 60점을 차례로 입력해 경계를 확인해 보세요.</p>
+        <form id="score-form"><label>점수 <span class="hint">0~100 사이의 정수</span><input name="score" type="number" min="0" max="100" step="1" value="60" required></label><button type="submit">판정하기 <span aria-hidden="true">↗</span></button></form><div class="result-label">실행 결과</div><pre id="score-result" class="result" aria-live="polite">점수를 입력하고 판정해 보세요.</pre><details><summary>Python 정답 코드 보기</summary><pre class="code" data-answer="2"></pre></details><p class="challenge">더 해보기 · 합격 기준을 70점으로 바꾼다면 어떤 조건이 필요할까요?</p></article>
+      <article id="lesson3"><div class="lesson-heading"><span class="number">03</span><div><p class="eyebrow">LISTS & LOOPS</p><h2>리스트에서 짝수 찾기</h2></div><span class="tag">list · for · %</span></div><p>숫자 5개를 리스트에 모으고, 2로 나눈 나머지가 0인 숫자를 찾아봅니다.</p>
+        <form id="list-form"><fieldset><legend>정수 5개 입력</legend><div class="five-fields"><label>첫째<input name="n1" type="number" step="1" value="1" required></label><label>둘째<input name="n2" type="number" step="1" value="2" required></label><label>셋째<input name="n3" type="number" step="1" value="3" required></label><label>넷째<input name="n4" type="number" step="1" value="4" required></label><label>다섯째<input name="n5" type="number" step="1" value="5" required></label></div></fieldset><button type="submit">짝수 찾기 <span aria-hidden="true">↗</span></button></form><div class="result-label">실행 결과</div><pre id="list-result" class="result" aria-live="polite">짝수는 어떤 숫자일까요?</pre><details><summary>Python 정답 코드 보기</summary><pre class="code" data-answer="3"></pre></details><p class="challenge">더 해보기 · 0과 음수도 넣어 보세요. 홀수를 고르려면 조건을 어떻게 바꿀까요?</p></article>
+      <article id="lesson4"><div class="lesson-heading"><span class="number">04</span><div><p class="eyebrow">NESTED LOOPS</p><h2>반복문으로 구구단 만들기</h2></div><span class="tag">for 안의 for</span></div><p>반복문 두 개로 단과 곱하는 수를 바꿉니다. 기본값은 원본 예제의 2~4단, 곱하기 1~4입니다.</p>
+        <form id="table-form"><div class="fields"><label>시작 단<input name="start" type="number" min="1" max="9" step="1" value="2" required></label><label>마지막 단<input name="end" type="number" min="1" max="9" step="1" value="4" required></label><label>몇까지 곱할까요?<input name="limit" type="number" min="1" max="9" step="1" value="4" required></label></div><button type="submit">구구단 만들기 <span aria-hidden="true">↗</span></button></form><div class="result-label">실행 결과</div><pre id="table-result" class="result" aria-live="polite">범위를 정하고 구구단을 만들어 보세요.</pre><details><summary>Python 정답 코드 보기</summary><pre class="code" data-answer="4"></pre></details><p class="challenge">더 해보기 · 마지막 단과 곱하는 수를 9로 바꿔 전체 구구단을 확인하세요.</p></article>
+      <article id="lesson5"><div class="lesson-heading"><span class="number">05</span><div><p class="eyebrow">MINI GAME</p><h2>숫자를 맞혀라!</h2></div><span class="tag">random · while</span></div><p>1~100 사이의 비밀 숫자를 골랐습니다. 힌트를 보고 정답에 가까워져 보세요.</p>
+        <form id="game-form"><label>예상 숫자<input name="guess" type="number" min="1" max="100" step="1" placeholder="1~100" required></label><div class="actions"><button id="guess-button" type="submit">정답 확인 <span aria-hidden="true">↗</span></button><button id="restart" class="secondary" type="button">새 게임</button></div></form><div class="result-label">게임 기록 <span id="attempts">0회 시도</span></div><pre id="game-result" class="result" aria-live="polite">첫 번째 숫자를 입력하세요.</pre><details><summary>Python 정답 코드 보기</summary><pre class="code" data-answer="5"></pre></details><p class="challenge">더 해보기 · 매번 가능한 숫자의 범위를 절반으로 줄여 보세요.</p></article>
+    </div>
+    <footer>PYTHON PRACTICE / DAY 01 <span>외부 라이브러리 없이 · HTML + CSS + JavaScript</span></footer>
+  </main>
+</body>
+</html>

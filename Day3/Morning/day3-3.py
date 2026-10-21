@@ -9,7 +9,7 @@ class VisionClassifier(BaseAIModel):
     def __init__(self, name: str, version: str, resolution: str):
         super().__init__(name, version)  # 부모 초기화 코드 재사용        
         self.resolution = resolution
-    def predict(self, input_data: str) -> str:  # 다형성 오버라이딩        
+    def predict(self, input_data: str) -> str:  # 메소드 오버라이딩        
        return f"[Vision {self.name} ({self.resolution})] 이미지 '{input_data}' 분석 결과 -> '고양이 (확률 98.4%)'"
     
 class TextSummarizerLLM(BaseAIModel):

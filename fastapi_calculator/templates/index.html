@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="두 숫자로 덧셈, 뺄셈, 곱셈, 나눗셈을 한 번에 계산하세요.">
+  <title>두 숫자 계산기</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="calculator">
+    <div class="badge" aria-hidden="true">+ − × ÷</div>
+    <p class="eyebrow">FASTAPI CALCULATOR</p>
+    <h1>두 숫자, 네 가지 계산</h1>
+    <p class="intro">숫자 두 개를 입력하면 사칙연산 결과를 한 번에 보여드려요.</p>
+    <form action="/calculate" method="get">
+      <div class="inputs">
+        <div><label for="first">첫 번째 값</label><input id="first" name="first" type="number" step="any" min="-1000000000000" max="1000000000000" placeholder="예: 10" value="$first" required></div>
+        <div><label for="second">두 번째 값</label><input id="second" name="second" type="number" step="any" min="-1000000000000" max="1000000000000" placeholder="예: 2" value="$second" required></div>
+      </div>
+      <p id="number-help" class="hint">음수·소수도 가능해요. ±1조 이내, 소수점 아래 12자리까지 입력해 주세요.</p>
+      <button type="submit">계산하기 <span aria-hidden="true">→</span></button>
+      $error
+    </form>
+    $results
+    <footer>뺄셈과 나눗셈은 첫 번째 값 기준이에요.<br>나눗셈 결과는 소수점 아래 최대 12자리로 반올림해요.</footer>
+  </main>
+</body>
+</html>

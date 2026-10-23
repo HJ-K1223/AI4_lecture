@@ -14,7 +14,7 @@ async def request_one(client,path,number):
 async def compare(client,path):
     print(f'\n{path}: 요청 3개 시작')
     start = perf_counter()
-    asyncio.gather(
+    await asyncio.gather(
         request_one(client,path,1),
         request_one(client,path,2),
         request_one(client,path,3)

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>소소 상점 · 재고 조회 실험실</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <header class="header"><a class="brand" href="/"><span class="brand-icon">소</span> 소소 상점</a><span class="header-note">DAY 7 / FASTAPI LAB</span></header>
+  <main>
+    <section class="intro">
+      <div><span class="eyebrow">일상 속 작은 서버 실험</span><h1>기다리는 방식이<br>쇼핑 경험을 바꿉니다.</h1><p>상품 하나의 재고 조회는 2초. 상품 세 개를 함께 조회하면?<br>같은 화면에서 서버의 동기·비동기 처리를 비교해 보세요.</p></div>
+      <aside class="intro-card"><span class="small-label">오늘의 실험</span><strong>3개 상품 × 2초</strong><p>동시에 요청해도 서버가<br>기다리는 방식에 따라 달라집니다.</p><span class="pill">단일 worker · 실제 HTTP 요청</span></aside>
+    </section>
+
+    <section class="experiment" aria-labelledby="experiment-title">
+      <div class="section-head"><div><span class="eyebrow">01 / 처리 방식</span><h2 id="experiment-title">어떻게 조회할까요?</h2></div><span class="muted">실제 재고 서버 대신 2초 대기를 사용합니다.</span></div>
+      <fieldset class="modes"><legend class="sr-only">서버 처리 방식 선택</legend>
+        <label class="mode bad"><input type="radio" name="mode" value="bad" checked><span><b>01</b> 동기 호출 · 서버 정지</span><small>담당 직원이 기다리는 동안<br>다음 주문도 멈춥니다.</small><code>legacy_lookup(id)</code><em>3개 예상 ≈ 6초</em></label>
+        <label class="mode good"><input type="radio" name="mode" value="good"><span><b>02</b> 비동기 조회 · 양보</span><small>준비를 기다리는 동안<br>다른 주문을 받습니다.</small><code>await async_lookup(id)</code><em>3개 예상 ≈ 2초</em></label>
+        <label class="mode thread"><input type="radio" name="mode" value="thread"><span><b>03</b> 동기 조회 · 스레드 위임</span><small>보조 직원에게 맡기고<br>다음 주문을 받습니다.</small><code>await asyncio.to_thread(...)</code><em>3개 예상 ≈ 2초</em></label>
+      </fieldset>
+      <div class="toolbar"><div class="actions"><button id="run-three" class="primary">상품 3개 함께 조회 <span>↗</span></button><button id="run-one" class="secondary">상품 1개 조회</button><button id="run-all" class="text-button">세 방식 차례로 비교 →</button></div><span id="run-state" role="status" aria-live="polite">준비되었어요</span></div>
+    </section>
+
+    <section aria-labelledby="products-title">
+      <div class="section-head"><div><span class="eyebrow">02 / 상품 목록</span><h2 id="products-title">장바구니에 담기 전에</h2></div><span class="muted">버튼을 누르면 재고를 확인합니다.</span></div>
+      <div class="products">
+        <article class="product"><div class="art mug-art" aria-hidden="true"><div class="mug"></div><span>EVERYDAY OBJECTS</span></div><div class="product-info"><span class="category">KITCHEN</span><h3>데일리 머그</h3><div class="product-line"><b>18,000원</b><span id="stock-1" class="stock">재고 미확인</span></div><p id="timing-1" class="timing">조회 결과가 여기에 표시됩니다.</p></div></article>
+        <article class="product"><div class="art note-art" aria-hidden="true"><div class="notebook"><i></i><span>small<br>thoughts.</span></div><span>MAKE ROOM FOR IDEAS</span></div><div class="product-info"><span class="category">STATIONERY</span><h3>포켓 노트</h3><div class="product-line"><b>8,500원</b><span id="stock-2" class="stock">재고 미확인</span></div><p id="timing-2" class="timing">조회 결과가 여기에 표시됩니다.</p></div></article>
+        <article class="product"><div class="art bag-art" aria-hidden="true"><div class="bag"><span>soso.</span></div><span>TAKE A LITTLE EVERYDAY</span></div><div class="product-info"><span class="category">LIFESTYLE</span><h3>캔버스 백</h3><div class="product-line"><b>24,000원</b><span id="stock-3" class="stock">재고 미확인</span></div><p id="timing-3" class="timing">조회 결과가 여기에 표시됩니다.</p></div></article>
+      </div>
+    </section>
+
+    <section class="results" aria-labelledby="results-title">
+      <div class="section-head"><div><span class="eyebrow">03 / 관찰하기</span><h2 id="results-title">서버에서는 무슨 일이 있었을까요?</h2></div><span class="live-dot">실측 결과</span></div>
+      <div class="metrics"><div><span>전체 요청 완료 시간</span><strong id="total-time">—<small>초</small></strong></div><div><span>함께 시작한 상품 요청</span><strong id="request-count">—<small>개</small></strong></div><div><span>실험 중 /health 응답 시간</span><strong id="health-time">—<small>초</small></strong></div></div>
+      <p id="explanation" class="explanation" role="status">아직 측정 전입니다. 예상 수치와 실제 측정값은 다를 수 있습니다.</p>
+      <div class="timeline-head"><b>서버 조회 구간</b><span>각 막대는 서버가 기록한 조회 시작부터 종료까지입니다.</span></div>
+      <div id="timeline" class="timeline"><p class="empty">조회 후 상품별 처리 구간과 스레드가 나타납니다.</p></div>
+      <p class="footnote">막대에는 네트워크 대기와 서버 진입 전 대기가 포함되지 않습니다. /health는 상품 요청 시작 약 0.3초 뒤 별도로 한 번 요청합니다.</p>
+      <details><summary>실제 요청 시작 시각과 스레드 자세히 보기</summary><p class="footnote">요청 시작 시각은 브라우저가 fetch를 호출한 시점입니다. 서버 도착 시각과는 다릅니다.</p><div class="table-scroll"><table><thead><tr><th>상품</th><th>클라이언트 시작</th><th>응답 대기</th><th>엔드포인트 스레드</th><th>조회 스레드</th></tr></thead><tbody id="request-details"></tbody></table></div></details>
+    </section>
+
+    <section class="history-panel"><div class="section-head"><div><span class="eyebrow">04 / 비교 기록</span><h2>같은 조건, 다른 결과</h2></div><button id="clear-history" class="text-button">기록 지우기</button></div><div class="table-scroll"><table><thead><tr><th>조회 방식</th><th>요청 수</th><th>전체 완료</th><th>/health 응답</th></tr></thead><tbody id="history"><tr><td colspan="4" class="empty">실험 기록이 여기에 쌓입니다. 새로고침하면 초기화됩니다.</td></tr></tbody></table></div></section>
+    <section class="lesson"><span class="eyebrow">기억할 한 가지</span><h2>async def만으로는 충분하지 않아요.</h2><p>내부에서 <code>time.sleep()</code>을 직접 호출하면 이벤트 루프 스레드도 쉽니다.<br>비동기 대기에는 <code>await</code>를, 기존 동기 I/O에는 별도 스레드 위임을 사용해 보세요.</p><a href="/docs" target="_blank" rel="noopener">API 문서 열기 ↗</a></section>
+  </main>
+  <footer>소소 상점 / 재고 조회 실험실 <span>FastAPI · asyncio · time · HTTPX</span></footer>
+</body>
+</html>

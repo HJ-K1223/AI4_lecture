@@ -1,0 +1,4 @@
+-r requirements.txt
+# 기존 Day8 테스트 도구. 배포에는 설치하지 않는다.
+httpx==0.28.1
+pytest==9.1.1

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="짧은 안부를 남기는 작은 방명록">
+  <title>작은 방명록</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main>
+    <header class="intro">
+      <p class="eyebrow">GUESTBOOK</p>
+      <h1>작은 방명록<span>반가운 마음을 남겨 주세요.</span></h1>
+      <p>짧은 인사도, 오늘의 이야기도 좋습니다.</p>
+    </header>
+    <section class="compose" aria-labelledby="write-heading">
+      <h2 id="write-heading">방명록에 인사를 남겨주세요</h2>
+      $notice
+      <form action="/entries" method="post" accept-charset="UTF-8">
+        <label for="name">이름 <small>최대 20자</small></label>
+        <input id="name" name="name" type="text" maxlength="20" required value="$name" placeholder="어떤 이름으로 남길까요?" autocomplete="nickname">
+        <label for="message">내용 <small>최대 500자</small></label>
+        <textarea id="message" name="message" rows="4" maxlength="500" required placeholder="따뜻한 한마디를 적어 주세요." aria-describedby="public-note">$message</textarea>
+        <div class="form-bottom">
+          <p id="public-note">모든 글은 공개됩니다. 개인정보는 적지 마세요.</p>
+          <button type="submit">글 남기기</button>
+        </div>
+      </form>
+    </section>
+    <section id="entries" aria-labelledby="entries-heading">
+      <div class="section-heading"><h2 id="entries-heading">남겨진 인사</h2><p>총 $total개 · 최신순</p></div>
+      $entries
+      <nav aria-label="목록 페이지">$previous <strong>$page / $last_page</strong> $following</nav>
+    </section>
+    <footer>서로에게 다정한 공간이 되어 주세요.</footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,4 @@
+﻿GET / = 200
+POST /entries followed redirect = 200
+Saved entry visible = True
+GET /static/style.css = 200

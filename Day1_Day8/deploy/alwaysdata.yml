@@ -1,0 +1,79 @@
+# 설정 완료 후 C:\AI4\.github\workflows\alwaysdata.yml 로 복사한다.
+name: Deploy guestbook to alwaysdata
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Day1_Day8/main.py'
+      - 'Day1_Day8/requirements.txt'
+      - 'Day1_Day8/templates/**'
+      - 'Day1_Day8/static/**'
+      - '.github/workflows/alwaysdata.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: alwaysdata-guestbook
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Read repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Configure SSH
+        env:
+          DEPLOY_KEY: ${{ secrets.AD_SSH_PRIVATE_KEY }}
+          KNOWN_HOSTS: ${{ secrets.AD_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          test -n "$DEPLOY_KEY"
+          test -n "$KNOWN_HOSTS"
+          umask 077
+          printf '%s\n' "$DEPLOY_KEY" > "$RUNNER_TEMP/ad_key"
+          printf '%s\n' "$KNOWN_HOSTS" > "$RUNNER_TEMP/ad_known_hosts"
+          ssh-keygen -y -f "$RUNNER_TEMP/ad_key" > /dev/null
+
+      - name: Upload application files
+        run: |
+          set -euo pipefail
+          python3 -m py_compile Day1_Day8/main.py
+          tar -czf "$RUNNER_TEMP/guestbook.tar.gz" -C Day1_Day8 main.py requirements.txt templates static
+          scp -i "$RUNNER_TEMP/ad_key" \
+            -o BatchMode=yes -o ConnectTimeout=30 -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="$RUNNER_TEMP/ad_known_hosts" \
+            "$RUNNER_TEMP/guestbook.tar.gz" hjk@ssh-hjk.alwaysdata.net:/home/hjk/guestbook/.github-deploy.tar.gz
+          ssh -i "$RUNNER_TEMP/ad_key" \
+            -o BatchMode=yes -o ConnectTimeout=30 -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="$RUNNER_TEMP/ad_known_hosts" \
+            hjk@ssh-hjk.alwaysdata.net \
+            'set -eu; cd /home/hjk/guestbook; test -x .venv/bin/python; tar -xzf .github-deploy.tar.gz; .venv/bin/python -m pip install --no-cache-dir -r requirements.txt; .venv/bin/python -m pip check; rm -f .github-deploy.tar.gz'
+
+      - name: Restart website
+        env:
+          API_TOKEN: ${{ secrets.AD_API_TOKEN }}
+          SITE_ID: ${{ secrets.AD_SITE_ID }}
+        run: |
+          set -euo pipefail
+          test -n "$API_TOKEN"
+          [[ "$SITE_ID" =~ ^[0-9]+$ ]]
+          curl --fail --silent --show-error --connect-timeout 15 --max-time 60 \
+            --request POST --basic --user "${API_TOKEN} account=hjk:" \
+            "https://api.alwaysdata.com/v1/site/${SITE_ID}/restart/"
+
+      - name: Check homepage
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --retry 6 --retry-delay 5 --retry-all-errors \
+            --connect-timeout 10 --max-time 20 \
+            https://hjk.alwaysdata.net/ --output "$RUNNER_TEMP/homepage.html"
+          grep -q '작은 방명록' "$RUNNER_TEMP/homepage.html"

@@ -1,0 +1,2 @@
+{% extends 'base.html' %}{% block title %}{{ title }} · note-demo{% endblock %}{% block content %}<h1>{{ title }}</h1><form method="post" class="panel">{% csrf_token %}{{ form.as_p }}<button>{% if title == '회원가입' %}회원가입{% else %}저장{% endif %}</button></form>{% if title == '회원가입' %}<p>이미 회원이신가요? <a href="{{ site_root }}/accounts/login/">로그인</a></p>{% endif %}{% endblock %}
+

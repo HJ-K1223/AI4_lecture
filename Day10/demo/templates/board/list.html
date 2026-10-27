@@ -1,0 +1,2 @@
+{% extends 'base.html' %}{% block content %}<h1>게시판</h1><ul class="posts">{% for post in page %}<li><a href="{{ site_root }}/posts/{{ post.pk }}/">{{ post.title }}</a></li>{% empty %}<li>아직 작성된 글이 없습니다.</li>{% endfor %}</ul><nav class="pages">{% if page.has_previous %}<a href="?page={{ page.previous_page_number }}">이전</a>{% endif %}<span>{{ page.number }} / {{ page.paginator.num_pages }}</span>{% if page.has_next %}<a href="?page={{ page.next_page_number }}">다음</a>{% endif %}</nav>{% endblock %}
+

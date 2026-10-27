@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}로그인 · note-demo{% endblock %}
+{% block content %}
+<section class="login-card" aria-labelledby="login-title">
+  <h1 id="login-title">로그인</h1>
+  <p>로그인하고 게시글과 댓글을 확인하세요.</p>
+  <form method="post" class="panel">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+    <button type="submit">로그인</button>
+  </form>
+  <p class="signup-prompt">아직 회원이 아니신가요? <a href="{{ site_root }}/accounts/signup/">회원가입</a></p>
+  <p><a href="{{ site_root }}/accounts/password-help/">비밀번호 찾기 (Mock)</a></p>
+</section>
+{% endblock %}

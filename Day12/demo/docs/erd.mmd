@@ -1,0 +1,43 @@
+%% 모든 엔터티의 스키마: shoppingmall
+erDiagram
+    members ||--o{ orders : "장바구니와 주문 소유"
+    orders ||--o{ order_items : "주문상품 포함"
+    products ||--o{ order_items : "상품 참조"
+    orders ||--o{ payments : "결제 시도"
+
+    members {
+        uuid id PK
+        varchar email UK
+        text password_hash
+        varchar name
+        varchar status
+    }
+    products {
+        uuid id PK
+        varchar name
+        bigint price
+        integer stock
+    }
+    orders {
+        uuid id PK
+        uuid member_id FK
+        varchar status
+        bigint total_amount
+    }
+    order_items {
+        uuid id PK
+        uuid order_id FK
+        uuid product_id FK
+        varchar product_name
+        bigint unit_price
+        integer quantity
+    }
+    payments {
+        uuid id PK
+        uuid order_id FK
+        bigint amount
+        varchar method
+        varchar status
+        uuid idempotency_key UK
+        varchar transaction_id
+    }

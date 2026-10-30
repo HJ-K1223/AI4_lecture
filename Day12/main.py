@@ -4,10 +4,11 @@ import psycopg
 import uvicorn
 from fastapi import APIRouter, FastAPI, Request
 from psycopg.rows import dict_row
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, EmailStr
 import os
 from dotenv import load_dotenv
 
+load_dotenv()
 
 app = FastAPI(title="사용자 등록·조회 실습")
 router = APIRouter(tags=["users"])
@@ -16,8 +17,8 @@ router = APIRouter(tags=["users"])
 class UserCreate(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
     name: str = Field(min_length=1, max_length=50)
-    email: str = Field(min_length=1, max_length=100)
-
+    # email: str = Field(min_length=1, max_length=100)
+    email : EmailStr = Field(min_length=1, max_length=100)
 
 def initialize_database(db_config):
     with psycopg.connect(**db_config) as conn:
@@ -26,7 +27,7 @@ def initialize_database(db_config):
             CREATE TABLE IF NOT EXISTS kdt_api01.users (
                 id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                 name TEXT NOT NULL,
-                email TEXT NOT NULL
+                email TEXT NOT NULL UNIQUE
             );
         """)
 

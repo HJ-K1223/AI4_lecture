@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} · {{ app_name }}{% endblock %}
+{% block content %}
+<a class="back-link" href="/products">← 상품 목록</a>
+<section class="product-detail" aria-labelledby="product-title">
+    <div class="detail-image"><img src="{{ product.image_path }}" alt="{{ product.name }}" width="600" height="500"></div>
+    <div class="detail-copy">
+        <p class="eyebrow">일상에 더하는 작은 선택</p>
+        <h1 id="product-title">{{ product.name }}</h1>
+        <p class="detail-price">{{ product.price | won }}</p>
+        <p class="product-description">{{ product.description }}</p>
+        <p class="stock-label">{% if product.stock > 0 %}재고 {{ product.stock }}개 · 결제 시 최종 확인{% else %}현재 품절입니다{% endif %}</p>
+        <form action="/checkout" method="get" class="auth-form" data-product-form>
+            <input type="hidden" name="product_id" value="{{ product.id }}">
+            <div class="form-field quantity-field">
+                <label for="quantity">수량</label>
+                <input id="quantity" name="quantity" type="number" value="{{ quantity }}" min="1" max="99" step="1" inputmode="numeric" required>
+            </div>
+            <div class="action-row">
+                <button class="button button-secondary" type="button" data-add-cart {% if product.stock == 0 %}disabled{% endif %}>장바구니 담기</button>
+                <button class="button button-primary" type="submit" {% if product.stock == 0 %}disabled{% endif %}>결제 선택</button>
+            </div>
+        </form>
+        <p class="action-message" data-message role="status" hidden></p>
+        <a class="inline-link" href="/cart">장바구니 확인 →</a>
+    </div>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', path='/js/shop.js') }}" defer></script>{% endblock %}

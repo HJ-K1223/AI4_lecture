@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}결제 확인 · {{ app_name }}{% endblock %}
+{% block content %}
+<div class="page-heading"><p class="eyebrow">주문 내용을 마지막으로 확인해요</p><h1>결제 확인</h1></div>
+<div class="purchase-layout">
+    <section class="order-panel" aria-labelledby="ordered-items-title">
+        <h2 id="ordered-items-title">주문 상품</h2>
+        {% for item in order['items'] %}
+        <div class="order-line"><span>{{ item.name }} × {{ item.quantity }}개</span><strong>{{ item.line_total | won }}</strong></div>
+        {% endfor %}
+        <hr>
+        <h2>배송정보</h2>
+        <p class="shipping-info">{{ order.recipient_name }}<br>{{ order.recipient_phone }}<br>{{ order.shipping_address }}</p>
+        <p class="muted order-reference">주문번호 {{ order.id }}</p>
+    </section>
+    <section class="order-panel" aria-labelledby="payment-title">
+        <h2 id="payment-title">결제</h2>
+        <p class="summary-total">결제 금액 <strong>{{ order.total_amount | won }}</strong></p>
+        {% if order.status == 'PENDING' %}
+        <form class="auth-form" data-payment-form>
+            <input type="hidden" name="order_id" value="{{ order.id }}">
+            <input type="hidden" name="idempotency_key" value="{{ payment_key }}">
+            <label class="payment-method"><input type="radio" name="method" value="MOCK_CARD" checked> 모의 카드</label>
+            <p class="muted">실제 금액은 청구되지 않으며 카드 정보를 입력하지 않습니다.</p>
+            <button class="button button-primary" type="submit">{{ order.total_amount | won }} 결제하기</button>
+        </form>
+        {% elif order.status == 'PAID' %}
+        <p class="form-notice">이미 결제가 완료된 주문입니다.</p><a href="/products" class="button button-primary">상품 목록으로</a>
+        {% else %}<p class="form-error">결제할 수 없는 주문입니다.</p>{% endif %}
+        <p class="action-message" data-message role="status" hidden></p>
+    </section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', path='/js/shop.js') }}" defer></script>{% endblock %}

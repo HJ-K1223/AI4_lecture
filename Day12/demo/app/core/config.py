@@ -9,11 +9,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy.engine import URL, make_url
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+SHARED_ENV = Path("C:/AI4/.env")
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=PROJECT_ROOT / ".env",
+        env_file=(SHARED_ENV, PROJECT_ROOT / ".env") if SHARED_ENV.exists() else PROJECT_ROOT / ".env",
         env_file_encoding="utf-8",
         extra="ignore",
         hide_input_in_errors=True,
@@ -24,6 +25,8 @@ class Settings(BaseSettings):
     app_base_url: AnyHttpUrl = "http://127.0.0.1:8000"
     allowed_hosts: list[str] = ["127.0.0.1", "localhost"]
     database_url: SecretStr | None = None
+    supabase_url: AnyHttpUrl | None = None
+    supabase_publishable_key: SecretStr | None = None
     db_host: str | None = Field(default=None, validation_alias=AliasChoices("DB_HOST", "host"), repr=False)
     db_port: int = Field(default=5432, ge=1, le=65535, validation_alias=AliasChoices("DB_PORT", "port"))
     db_name: str | None = Field(default=None, validation_alias=AliasChoices("DB_NAME", "dbname"), repr=False)
@@ -34,7 +37,7 @@ class Settings(BaseSettings):
     session_secret: SecretStr | None = None
     cookie_secure: bool = True
 
-    @field_validator("database_url", "session_secret", "db_password", mode="before")
+    @field_validator("database_url", "session_secret", "db_password", "supabase_publishable_key", "supabase_url", mode="before")
     @classmethod
     def normalize_empty_secret(cls, value):
         return None if isinstance(value, str) and not value.strip() else value

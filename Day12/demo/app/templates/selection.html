@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}선택 상품 확인 · {{ app_name }}{% endblock %}
+{% block content %}
+<section class="auth-card auth-card-wide" aria-labelledby="selection-title">
+    <p class="eyebrow">선택한 상품을 이어서 확인해요</p>
+    <h1 id="selection-title">선택 상품 확인</h1>
+    <div class="selection-item">
+        <img src="{{ product.image_path }}" alt="{{ product.name }}" width="120" height="100">
+        <div><h2>{{ product.name }}</h2><p>{{ product.price | won }} × {{ quantity }}개</p></div>
+    </div>
+    <p class="summary-total">선택 금액 <strong>{{ (product.price * quantity) | won }}</strong></p>
+    <p class="muted">장바구니에 담은 뒤 다른 상품과 배송정보를 함께 확인해 주세요.</p>
+    <form data-selection-form>
+        <input type="hidden" name="product_id" value="{{ product.id }}">
+        <input type="hidden" name="quantity" value="{{ quantity }}">
+        <button type="submit" class="button button-primary full-width">장바구니에 담고 계속</button>
+    </form>
+    <p class="action-message" data-message role="status" hidden></p>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', path='/js/shop.js') }}" defer></script>{% endblock %}

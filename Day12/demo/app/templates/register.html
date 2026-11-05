@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}회원가입 · {{ app_name }}{% endblock %}
+{% block content %}
+<section class="auth-card auth-card-wide" aria-labelledby="auth-title">
+    <p class="eyebrow">소담한 일상을 함께해요</p>
+    <h1 id="auth-title">회원가입</h1>
+    <p class="auth-description">주문과 구매내역 확인을 위한 계정을 만들어 주세요.</p>
+    {% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
+    <form action="/register" method="post" class="auth-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input type="hidden" name="next" value="{{ next_path }}">
+        <div class="form-field">
+            <label for="email">이메일</label>
+            <input id="email" name="email" type="email" value="{{ values.get('email', '') }}" autocomplete="username" maxlength="254" required>
+        </div>
+        <div class="form-field">
+            <label for="name">이름</label>
+            <input id="name" name="name" value="{{ values.get('name', '') }}" autocomplete="name" maxlength="80" required>
+        </div>
+        <div class="form-row">
+            <div class="form-field">
+                <label for="password">비밀번호</label>
+                <input id="password" name="password" type="password" autocomplete="new-password" minlength="12" maxlength="128" aria-describedby="password-help" required>
+            </div>
+            <div class="form-field">
+                <label for="password-confirm">비밀번호 확인</label>
+                <input id="password-confirm" name="password_confirm" type="password" autocomplete="new-password" minlength="12" maxlength="128" required>
+            </div>
+        </div>
+        <p id="password-help" class="field-help">비밀번호는 12~128자로 입력해 주세요.</p>
+        <div class="form-field">
+            <label for="phone">연락처 <span class="field-optional">선택</span></label>
+            <input id="phone" name="phone" type="tel" value="{{ values.get('phone', '') }}" autocomplete="tel" maxlength="30">
+        </div>
+        <div class="form-field">
+            <label for="address">주소 <span class="field-optional">선택</span></label>
+            <textarea id="address" name="address" autocomplete="street-address" maxlength="500" rows="2">{{ values.get('address', '') }}</textarea>
+        </div>
+        <button class="button button-primary" type="submit">회원가입</button>
+    </form>
+    <p class="auth-switch">이미 계정이 있나요? <a href="/login?next={{ next_path | urlencode }}">로그인</a></p>
+</section>
+{% endblock %}

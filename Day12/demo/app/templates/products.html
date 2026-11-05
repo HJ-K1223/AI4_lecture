@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}상품 목록 · {{ app_name }}{% endblock %}
+
+{% block content %}
+{% if paid %}<p class="form-notice" role="status">모의 결제가 완료되었습니다. 구매해 주셔서 감사합니다.</p>{% endif %}
+<section class="intro" aria-labelledby="intro-title">
+    <div class="intro-copy">
+        <p class="eyebrow">작은 선택, 편안한 일상</p>
+        <h1 id="intro-title">일상에 필요한 물건을<br>가볍게 둘러보세요.</h1>
+        <p class="intro-description">마음에 드는 상품을 담고, 나만의 일상을 채워보세요.</p>
+    </div>
+    <div class="intro-decoration" aria-hidden="true">
+        <span class="decoration-line"></span>
+        <span class="decoration-label">소담한 일상</span>
+    </div>
+</section>
+
+<section class="catalog" aria-labelledby="catalog-title">
+    <div class="section-heading">
+        <h2 id="catalog-title">상품 목록</h2>
+        <span class="muted">전체 {{ total }}개</span>
+    </div>
+    {% if products %}
+    <div class="product-grid">
+        {% for product in products %}
+        <a class="product-card" href="/products/{{ product.id }}">
+            <div class="product-image"><img src="{{ product.image_path }}" alt="{{ product.name }}" loading="lazy" width="360" height="300"></div>
+            <div class="product-card-copy">
+                <h3>{{ product.name }}</h3>
+                <p class="product-price">{{ product.price | won }}</p>
+                <p class="stock-label">{% if product.stock > 0 %}재고 {{ product.stock }}개{% else %}품절{% endif %}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% if pages > 1 %}
+    <nav class="pagination" aria-label="상품 페이지">
+        {% if page > 1 %}<a class="button" href="/products?page={{ page - 1 }}">이전</a>{% endif %}
+        <span aria-current="page">{{ page }} / {{ pages }}</span>
+        {% if page < pages %}<a class="button" href="/products?page={{ page + 1 }}">다음</a>{% endif %}
+    </nav>
+    {% endif %}
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 17h24l3 24H9l3-24Z" stroke-linejoin="round"/>
+                <path d="M18 19v-7a6 6 0 0 1 12 0v7" stroke-linecap="round"/>
+            </svg>
+        </div>
+        <h3>등록된 상품이 없습니다</h3>
+        <p>상품이 등록되면 이곳에서 만나볼 수 있어요.</p>
+        <a class="button button-secondary" href="/products">다시 확인하기<span aria-hidden="true"> ↗</span></a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

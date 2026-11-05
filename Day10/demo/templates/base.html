@@ -1,0 +1,7 @@
+{% load static %}<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{% block title %}note-demo{% endblock %}</title><link rel="stylesheet" href="{% static 'css/site.css' %}"></head>
+<body><header><a class="brand" href="{{ site_root }}/">note-demo</a><nav>
+{% if user.is_authenticated %}<span>{{ user.nickname }}</span><a href="{{ site_root }}/posts/new/">글 작성</a>{% if user.role == 'ADMIN' %}<a href="{{ site_root }}/moderation/terms/">금칙어 관리</a>{% endif %}<form method="post" action="{{ site_root }}/accounts/logout/">{% csrf_token %}<button>로그아웃</button></form>
+{% else %}<a href="{{ site_root }}/accounts/login/">로그인</a>{% endif %}</nav></header>
+<main>{% block content %}{% endblock %}</main><footer>회원 기반 게시판 데모 · note-demo</footer></body></html>
+

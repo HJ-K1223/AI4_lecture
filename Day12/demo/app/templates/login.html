@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}로그인 · {{ app_name }}{% endblock %}
+{% block content %}
+<section class="auth-card" aria-labelledby="auth-title">
+    <p class="eyebrow">다시 만나 반가워요</p>
+    <h1 id="auth-title">로그인</h1>
+    <p class="auth-description">로그인하고 선택한 상품을 이어서 살펴보세요.</p>
+    {% if registered %}<p class="form-notice" role="status">회원가입을 완료했어요. 로그인해 주세요.</p>{% endif %}
+    {% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
+    <form action="/login" method="post" class="auth-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input type="hidden" name="next" value="{{ next_path }}">
+        <div class="form-field">
+            <label for="email">이메일</label>
+            <input id="email" name="email" type="email" value="{{ email }}" autocomplete="username" maxlength="254" required>
+        </div>
+        <div class="form-field">
+            <label for="password">비밀번호</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" maxlength="128" required>
+        </div>
+        <button class="button button-primary" type="submit">로그인</button>
+    </form>
+    <p class="auth-switch">처음 방문하셨나요? <a href="/register?next={{ next_path | urlencode }}">회원가입</a></p>
+</section>
+{% endblock %}

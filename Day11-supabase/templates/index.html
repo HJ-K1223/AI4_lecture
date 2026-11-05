@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>작은 방명록</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; color: #25312d; background: #f4f5ef; font: 16px/1.65 system-ui, sans-serif; }
+    main { width: min(100% - 36px, 720px); margin: 60px auto; }
+    .eyebrow { color: #526c5a; font-size: 13px; letter-spacing: .12em; }
+    h1 { margin: 8px 0; font-size: clamp(32px, 7vw, 44px); letter-spacing: -.05em; }
+    .intro { margin: 0 0 32px; color: #56645d; }
+    form { padding: 28px; background: #fff; border: 1px solid #d8dfd4; border-radius: 16px; }
+    label { display: block; margin: 0 0 7px; font-weight: 650; }
+    input, textarea { display: block; width: 100%; padding: 12px; border: 1px solid #aebbb0; border-radius: 7px; font: inherit; background: #fff; color: inherit; }
+    input { margin-bottom: 20px; }
+    textarea { min-height: 140px; resize: vertical; }
+    .hint { margin: 6px 0 20px; font-size: 13px; color: #56645d; }
+    button { padding: 12px 23px; background: #2e5740; color: #fff; border: 0; border-radius: 7px; font: inherit; font-weight: 650; cursor: pointer; }
+    button:hover { background: #21422f; }
+    :focus-visible { outline: 3px solid #a16b17; outline-offset: 3px; }
+    .error { padding: 12px; border: 1px solid #bb6262; border-radius: 7px; color: #8d2525; background: #fff3f1; }
+    .section-heading { display: flex; justify-content: space-between; align-items: center; margin-top: 36px; }
+    h2 { font-size: 20px; }
+    .count, time { color: #56645d; font-size: 13px; }
+    .entry { padding: 22px 0; border-bottom: 1px solid #d8dfd4; }
+    .entry header { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 16px; }
+    .entry strong { overflow-wrap: anywhere; }
+    .message { white-space: pre-wrap; overflow-wrap: anywhere; margin: 12px 0 0; }
+    .empty { padding: 30px 0; color: #56645d; }
+    nav { display: flex; justify-content: center; gap: 24px; padding: 28px 0; }
+    a { color: #2e5740; }
+    footer { margin-top: 24px; color: #56645d; font-size: 13px; }
+    @media (max-width: 480px) { main { margin-top: 32px; } form { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <span class="eyebrow">GUESTBOOK</span>
+      <h1>잠깐 머물다, 한 줄.</h1>
+      <p class="intro">오늘의 안부나 작은 생각을 남겨 주세요.</p>
+    </header>
+    <form action="/entries" method="post" accept-charset="UTF-8">
+      @@error@@
+      <label for="name">이름 또는 별명</label>
+      <input id="name" name="name" required maxlength="30" value="@@name@@" autocomplete="nickname" placeholder="어떤 이름으로 남길까요?">
+      <label for="message">남기고 싶은 말</label>
+      <textarea id="message" name="message" required maxlength="1000" aria-describedby="message-hint" placeholder="반가운 인사를 적어 주세요.">@@message@@</textarea>
+      <p id="message-hint" class="hint">최대 1,000자 · 모든 글은 공개됩니다. 개인정보는 남기지 마세요.</p>
+      <button type="submit">인사 남기기</button>
+    </form>
+    <section aria-labelledby="entries-heading">
+      <div class="section-heading">
+        <h2 id="entries-heading">남겨진 인사</h2>
+        <span class="count">총 @@total@@개의 인사</span>
+      </div>
+      @@entries@@
+      <nav aria-label="방명록 페이지">@@navigation@@</nav>
+    </section>
+    <footer>작은 방명록 · 서로를 존중하는 말을 남겨 주세요.</footer>
+  </main>
+</body>
+</html>

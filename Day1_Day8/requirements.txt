@@ -1,3 +1,4 @@
-# 기존 프로젝트와 같은 라이브러리만 사용 (새 라이브러리 없음)
+# FastAPI 서버와 PostgreSQL 드라이버
 fastapi==0.150.0
 uvicorn==0.54.0
+psycopg[binary]==3.3.6

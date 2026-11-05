@@ -1,0 +1,21 @@
+flowchart TD
+    A["/products → /products/상품ID<br/>shoppingmall.products SELECT<br/>상품명·가격·재고 표시"] --> B["결제 선택 · /checkout?product_id=상품ID&quantity=2<br/>GET이므로 DB 변경 없음"]
+    B --> C{"로그인 상태 확인"}
+    C -->|미인증| D["/login?next=원래 상품·수량 URL<br/>가입·로그인 후 같은 선택 화면으로 복귀"]
+    D --> E["선택 상품 확인"]
+    C -->|인증됨| E
+    E --> F["명시적으로 장바구니 담기<br/>orders INSERT: O1 / member=M1 / CART<br/>order_items INSERT: I1 / O1 / P1 / 10000원 × 2<br/>재고 유지"]
+    F --> G["/cart · 상품·수량·현재 가격 확인<br/>수량 변경: order_items UPDATE + orders 합계 UPDATE<br/>삭제: order_items DELETE + orders 합계 UPDATE"]
+    G --> H{"주문 생성 · 서명된 확인값과 현재 상품 비교"}
+    H -->|내용·가격 변경| I["409 · 장바구니 다시 확인<br/>PENDING 전환 없음"]
+    I --> G
+    H -->|일치| J["O1 UPDATE: CART → PENDING / 합계=20000<br/>배송정보·주문 시각 저장<br/>I1: 이름·단가 스냅샷 확정<br/>재고 유지"]
+    J --> K["/checkout/O1 · 최종 금액·배송정보 확인<br/>모의 결제 POST · 주문 ID + 멱등키 전송"]
+    K --> L["회원 → 주문 → 상품 ID 순서로 행 잠금<br/>소유권·상태·금액·재고 검증"]
+    L --> M{"이미 성공한 주문·요청인가?"}
+    M -->|예| N["기존 성공 결과 반환<br/>추가 결제·재고 차감 없음"]
+    M -->|아니오 · 재고 부족 또는 모의 거절| O["payments INSERT: FAILED<br/>orders=PENDING / 재고 유지"]
+    M -->|아니오 · 정상| P["하나의 트랜잭션으로 COMMIT<br/>payments: SUCCEEDED / 거래ID / 20000원<br/>products P1.stock: 5 → 3<br/>orders O1: PENDING → PAID / 결제 시각"]
+    P --> Q["완료 메시지 → /products"]
+    N --> Q
+    P -.-> R["처리 중 오류: 전체 ROLLBACK<br/>일부 상품만 차감되는 상태 방지"]

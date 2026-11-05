@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}장바구니 · {{ app_name }}{% endblock %}
+{% block content %}
+<div class="page-heading"><p class="eyebrow">담아둔 상품을 확인해요</p><h1>장바구니</h1></div>
+{% if cart['items'] %}
+<div class="purchase-layout">
+    <section class="cart-items" aria-label="장바구니 상품">
+        {% for item in cart['items'] %}
+        <article class="cart-item" data-item-id="{{ item.id }}">
+            <a href="/products/{{ item.product_id }}"><img src="{{ item.image_path }}" alt="{{ item.name }}" width="120" height="100"></a>
+            <div class="cart-item-copy">
+                <h2>{{ item.name }}</h2><p>{{ item.unit_price | won }}</p>
+                <p class="stock-label">{% if not item.is_active %}판매 종료{% elif item.stock < item.quantity %}재고 부족 · 현재 {{ item.stock }}개{% else %}재고 {{ item.stock }}개{% endif %}</p>
+                <form class="quantity-controls" data-quantity-form>
+                    <label class="sr-only" for="qty-{{ item.id }}">{{ item.name }} 수량</label>
+                    <input id="qty-{{ item.id }}" name="quantity" type="number" min="1" max="99" step="1" value="{{ item.quantity }}" required inputmode="numeric">
+                    <button class="button button-small" type="submit">수량 변경</button>
+                    <button class="text-button" type="button" data-remove-item>삭제</button>
+                </form>
+            </div>
+            <strong class="item-total">{{ item.line_total | won }}</strong>
+        </article>
+        {% endfor %}
+        <a href="/products" class="inline-link">← 상품 더 둘러보기</a>
+    </section>
+    <section class="order-panel" aria-labelledby="order-title">
+        <h2 id="order-title">주문 정보</h2>
+        <p class="summary-total">상품 합계 <strong>{{ cart.total_amount | won }}</strong></p>
+        <form class="auth-form" data-order-form>
+            <input type="hidden" name="cart_id" value="{{ cart.id }}">
+            <input type="hidden" name="quote" value="{{ cart.quote }}">
+            <div class="form-field"><label for="recipient-name">받는 분</label><input id="recipient-name" name="recipient_name" value="{{ member.name }}" maxlength="80" autocomplete="name" required></div>
+            <div class="form-field"><label for="recipient-phone">연락처</label><input id="recipient-phone" name="recipient_phone" value="{{ member.phone or '' }}" type="tel" maxlength="30" autocomplete="tel" required></div>
+            <div class="form-field"><label for="shipping-address">배송주소</label><textarea id="shipping-address" name="shipping_address" maxlength="500" autocomplete="street-address" rows="2" required>{{ member.address or '' }}</textarea></div>
+            <p class="field-help">입력한 배송정보는 이번 주문에 저장됩니다.</p>
+            <button class="button button-primary" type="submit">주문 생성 · 결제 확인</button>
+        </form>
+    </section>
+</div>
+{% else %}
+<section class="empty-state"><h2>장바구니가 비어 있어요</h2><p>마음에 드는 상품을 담아보세요.</p><a href="/products" class="button button-primary">상품 둘러보기</a></section>
+{% endif %}
+<p class="action-message" data-message role="status" hidden></p>
+<a class="inline-link" data-refresh-cart href="/cart" hidden>변경된 장바구니 다시 확인 →</a>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', path='/js/shop.js') }}" defer></script>{% endblock %}

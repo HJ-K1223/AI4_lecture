@@ -1,3 +1,12 @@
+# PostgreSQL 전환 검증 — 2026-10-29
+
+- Day1_Day8/.venv에 검증 환경 및 requirements-dev.txt 설치 완료.
+- 오프라인 테스트 15개 통과. Starlette의 httpx TestClient 관련 폐기 예정 경고 1개가 있다.
+- check_connection.py로 실제 Supabase 연결 및 guestbook 네 열 조회 성공. 읽기 전용 트랜잭션을 사용했다.
+- 실제 INSERT, 동시 저장 및 1,000건 한도, 재시작 후 보존은 이번에 검증하지 않았다.
+- alwaysdata 업로드, 환경변수 변경, 재시작, 운영 SQLite 데이터 이전은 수행하지 않았다.
+- 아래는 이전 SQLite 구현의 검증 기록이며 현재 PostgreSQL 구현의 결과가 아니다.
+
 # 검증 결과
 
 실행일: 2026-10-23. 기존 학습 파일을 변경하지 않고 `Day1_Day8`만 작성했다.
